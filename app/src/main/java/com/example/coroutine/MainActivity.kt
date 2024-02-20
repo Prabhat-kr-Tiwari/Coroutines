@@ -5,38 +5,47 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.coroutine.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
+   lateinit var binding: ActivityMainBinding
     companion object{
         val TAG="PRABHAT"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val buttonLoadImage = findViewById<Button>(R.id.button_load_image)
-        val imageView = findViewById<ImageView>(R.id.image)
-
-        buttonLoadImage.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                Log.d(TAG, "onCreate: Thread Name ${Thread.currentThread().name}")
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
-                val url = URL("https://i.redd.it/bfc0pz8qdji61.jpg")
-                val bitmap = BitmapFactory.decodeStream(url.openStream())
-                withContext(Dispatchers.Main) {
-                    Log.d(TAG, "onCreate: Thread Name ${Thread.currentThread().name}")
+        binding.btnRunCode.setOnClickListener {
 
-                    imageView.setImageBitmap(bitmap)
-                }
-            }
 
+            //suspending call
+         /*   CoroutineScope(Dispatchers.Main.immediate).launch {
+                delay(3000)
+                showMessage()
+            }*/
+
+            //block call
+
+            Thread.sleep(3000)
+            showMessage()
         }
     }
+    private fun showMessage(){
+        Toast.makeText(this@MainActivity, "Hello", Toast.LENGTH_SHORT).show()
+    }
+
+    suspend fun findBigPrime(): BigInteger =
+        BigInteger.probablePrime(4096, java.util.Random())
 }
