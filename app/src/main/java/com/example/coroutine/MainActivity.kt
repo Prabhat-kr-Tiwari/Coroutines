@@ -28,24 +28,25 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.btnRunCode.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+//                showMessage()
+                val no=findBigPrime()
+                Log.d(TAG, "onCreate: $no")
+            }
 
 
-            //suspending call
-         /*   CoroutineScope(Dispatchers.Main.immediate).launch {
-                delay(3000)
-                showMessage()
-            }*/
-
-            //block call
-
-            Thread.sleep(3000)
-            showMessage()
         }
     }
-    private fun showMessage(){
+    private suspend fun showMessage(){
         Toast.makeText(this@MainActivity, "Hello", Toast.LENGTH_SHORT).show()
+//        findBigPrime()
     }
 
-    suspend fun findBigPrime(): BigInteger =
+ /*   suspend fun findBigPrime(): BigInteger =
+        BigInteger.probablePrime(4096, java.util.Random())*/
+
+    suspend fun findBigPrime(): BigInteger = withContext(Dispatchers.Default){
         BigInteger.probablePrime(4096, java.util.Random())
+    }
+
 }
